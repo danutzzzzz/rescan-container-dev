@@ -1,0 +1,70 @@
+name: Docker Build and Publish
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+# Define permissions for GitHub token (required for GHCR login)
+permissions:
+  contents: read
+  packages: write
+
+# Replace 'YOUR_DOCKERHUB_USERNAME' with your actual username
+env:
+  DOCKER_IMAGE_NAME: rescan
+  DOCKERHUB_REPO: danutzzzzz/rescan-container-dev
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout THIS repository (for Dockerfile and workflow)
+        uses: actions/checkout@v4
+
+      # --- NEW STEP: Clone the external source repository and overlay onto the current directory ---
+      # This step explicitly clones the external source and copies its contents to the root of the 
+      # runner's workspace. This prepares the build context for the Dockerfile's 'COPY . /app' instruction.
+      - name: Clone Rescan Source Project and Prepare Build Context
+        run: |
+          echo "Cloning rescan source into temporary directory..."
+          git clone https://github.com/Pukabyte/rescan.git /tmp/rescan_source
+          
+          echo "Copying source files over to the build context..."
+          # Copy everything from the source except the .git folder (to keep our repo's git history)
+          # 'shopt -s dotglob' enables matching dotfiles (like .gitignore)
+          shopt -s dotglob
+          cp -r /tmp/rescan_source/* .
+          rm -rf /tmp/rescan_source
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # --- Docker Hub Login ---
+      #- name: Login to Docker Hub
+      #  uses: docker/login-action@v3
+      #  with:
+      #    username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #    password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # --- GitHub Container Registry (GHCR) Login ---
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          
+      # --- Build and Push ---
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v5
+        with:
+          context: . # Uses the root directory, which now contains the rescan source files
+          push: true
+          tags: |
+            ${{ env.DOCKERHUB_REPO }}:latest
+            ghcr.io/${{ github.repository_owner }}/${{ env.DOCKER_IMAGE_NAME }}:latest
+          # Cache improves build times on subsequent runs
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
