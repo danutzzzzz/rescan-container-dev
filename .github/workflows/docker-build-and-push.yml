@@ -23,9 +23,8 @@ jobs:
       - name: Checkout THIS repository (for Dockerfile and workflow)
         uses: actions/checkout@v4
 
-      # --- NEW STEP: Clone the external source repository and overlay onto the current directory ---
-      # This step explicitly clones the external source and copies its contents to the root of the 
-      # runner's workspace. This prepares the build context for the Dockerfile's 'COPY . /app' instruction.
+      # --- CRITICAL STEP: Clone the external source repository and prepare the build context ---
+      # This explicitly pulls the source files from the external repo into the local workspace (the build context).
       - name: Clone Rescan Source Project and Prepare Build Context
         run: |
           echo "Cloning rescan source into temporary directory..."
@@ -33,9 +32,13 @@ jobs:
           
           echo "Copying source files over to the build context..."
           # Copy everything from the source except the .git folder (to keep our repo's git history)
-          # 'shopt -s dotglob' enables matching dotfiles (like .gitignore)
           shopt -s dotglob
           cp -r /tmp/rescan_source/* .
+          
+          # New Step: Copy the required config-example.ini to the root 
+          # so users can easily find it for local setup.
+          cp /tmp/rescan_source/config-example.ini config-example.ini
+
           rm -rf /tmp/rescan_source
 
       - name: Set up Docker Buildx
@@ -60,7 +63,7 @@ jobs:
       - name: Build and push Docker images
         uses: docker/build-push-action@v5
         with:
-          context: . # Uses the root directory, which now contains the rescan source files
+          context: . # The '.' now contains all the rescan source files
           push: true
           tags: |
             ${{ env.DOCKERHUB_REPO }}:latest
