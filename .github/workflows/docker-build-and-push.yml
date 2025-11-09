@@ -20,26 +20,27 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout THIS repository (for Dockerfile and workflow)
+      - name: Checkout THIS repository (for workflow)
         uses: actions/checkout@v4
 
-      # --- CRITICAL STEP: Clone the external source repository and prepare the build context ---
-      # This explicitly pulls the source files from the external repo into the local workspace (the build context).
-      - name: Clone Rescan Source Project and Prepare Build Context
-        run: |
-          echo "Cloning rescan source into temporary directory..."
-          git clone https://github.com/Pukabyte/rescan.git /tmp/rescan_source
-          
-          echo "Copying source files over to the build context..."
-          # Copy everything from the source except the .git folder (to keep our repo's git history)
-          shopt -s dotglob
-          cp -r /tmp/rescan_source/* .
-          
-          # New Step: Copy the required config-example.ini to the root 
-          # so users can easily find it for local setup.
-          cp /tmp/rescan_source/config-example.ini config-example.ini
+      - name: Checkout THIS repository (for workflow)
+        uses: actions/checkout@v4
 
-          rm -rf /tmp/rescan_source
+      # --- CRITICAL STEP: Clone the external source and prepare the build context ---
+      # We clone the source, and then fix the file structure to satisfy the external Dockerfile's demands.
+      - name: Clone Rescan Source Project and Fix Config File
+        id: clone_source
+        run: |
+          # 1. Clone the external repository into a specific directory.
+          git clone https://github.com/Pukabyte/rescan.git rescan_source
+          
+          # 2. CRITICAL FIX: The external Dockerfile has the incorrect line: COPY config.ini .
+          # We must create the config.ini file inside the source folder to prevent the build from failing.
+          echo "Fixing file structure to satisfy external Dockerfile..."
+          cp rescan_source/config-example.ini rescan_source/config.ini
+
+          # 3. Output the path to the cloned source directory for the build action.
+          echo "SOURCE_DIR=rescan_source" >> $GITHUB_OUTPUT
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
