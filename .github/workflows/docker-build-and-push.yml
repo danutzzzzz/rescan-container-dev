@@ -26,17 +26,17 @@ jobs:
       - name: Checkout THIS repository (for workflow)
         uses: actions/checkout@v4
 
-      # --- CRITICAL STEP: Clone the external source and prepare the build context ---
-      # We clone the source, and then fix the file structure to satisfy the external Dockerfile's demands.
+# --- 1. CRITICAL STEP: Clone the external source and prepare the context ---
+      # This clones the external repository into a specific directory, which will serve as the build context.
       - name: Clone Rescan Source Project and Fix Config File
         id: clone_source
         run: |
           # 1. Clone the external repository into a specific directory.
           git clone https://github.com/Pukabyte/rescan.git rescan_source
           
-          # 2. CRITICAL FIX: The external Dockerfile has the incorrect line: COPY config.ini .
-          # We must create the config.ini file inside the source folder to prevent the build from failing.
-          echo "Fixing file structure to satisfy external Dockerfile..."
+          # 2. FIX: The external Dockerfile (which we can't edit) likely has 'COPY config.ini .'.
+          # We must create 'config.ini' in the source folder to prevent the build from failing.
+          echo "Fixing file structure to satisfy external Dockerfile's COPY instruction..."
           cp rescan_source/config-example.ini rescan_source/config.ini
 
           # 3. Output the path to the cloned source directory for the build action.
@@ -64,11 +64,13 @@ jobs:
       - name: Build and push Docker images
         uses: docker/build-push-action@v5
         with:
-          context: . # The '.' now contains all the rescan source files
+          # Context: Where to find the files (the external source code)
+          context: ${{ steps.clone_source.outputs.SOURCE_DIR }} 
+          # File: Where to find the build instructions (the Dockerfile in YOUR repo)
+          file: ./Dockerfile 
           push: true
           tags: |
             ${{ env.DOCKERHUB_REPO }}:latest
             ghcr.io/${{ github.repository_owner }}/${{ env.DOCKER_IMAGE_NAME }}:latest
-          # Cache improves build times on subsequent runs
           cache-from: type=gha
           cache-to: type=gha,mode=max
