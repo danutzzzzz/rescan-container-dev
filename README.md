@@ -7,6 +7,15 @@
 
 **Containerized deployment of Rescan for Plex**
 
+<div align="center">
+  <a href="https://github.com/Pukabyte/rescan">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Pukabyte/rescan/master/assets/logo.png" width="400">
+      <img alt="rescan" src="assets/logo.png" width="400">
+    </picture>
+  </a>
+</div>
+
 A fully containerized version of [Rescan](https://github.com/Pukabyte/rescan) - the automated Plex library sync tool that ensures your media files stay in perfect harmony with your Plex server.
 
 </div>
@@ -64,7 +73,7 @@ enabled = false
 discord_webhook_url = your_discord_webhook_url_here
 ```
 
-For detailed configuration options, see the [main repository documentation](https://github.com/pkkid/rescan#configuration).
+For detailed configuration options, see the [main repository documentation](https://github.com/Pukabyte/rescan#configuration).
 
 ---
 
@@ -81,19 +90,19 @@ For detailed configuration options, see the [main repository documentation](http
 
 For comprehensive documentation, feature details, and support:
 
-👉 **[Visit the main Rescan repository](https://github.com/pkkid/rescan)**
+👉 **[Visit the main Rescan repository](https://github.com/Pukabyte/rescan)**
 
 ---
 
 ## 🙏 Credits
 
-This is a containerized implementation of [Rescan](https://github.com/pkkid/rescan) by pkkid. All credit for the core application goes to the original author.
+This is a containerized implementation of [Rescan](https://github.com/Pukabyte/rescan) by Pukabyte. All credit for the core application goes to the original author.
 
 ---
 
 ## 📄 License
 
-MIT License - See the [main repository](https://github.com/pkkid/rescan) for full license details.
+MIT License - See the [main repository](https://github.com/Pukabyte/rescan) for full license details.
 
 ---
 
