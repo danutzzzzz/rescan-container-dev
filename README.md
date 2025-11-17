@@ -17,7 +17,7 @@ A fully containerized version of [Rescan](https://github.com/Pukabyte/rescan) - 
 
 This repository provides a **Docker-ready implementation** of Rescan, making it simple to deploy and manage as a container. Rescan automatically scans your Plex media libraries for missing files and triggers rescans when needed — perfect for catching imports that your autoscan tools miss.
 
-For full documentation on Rescan's features and capabilities, visit the [**main Rescan repository**](https://github.com/pkkid/rescan).
+For full documentation on Rescan's features and capabilities, visit the [**main Rescan repository**](https://github.com/Pukabyte/rescan).
 
 ---
 
