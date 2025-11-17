@@ -7,8 +7,8 @@ RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 # Set working directory
 WORKDIR /app
 
-# Clone the rescan repository
-RUN git clone --branch main https://github.com/Pukabyte/rescan.git .
+# Clone the rescan repository (using master branch)
+RUN git clone --branch master https://github.com/Pukabyte/rescan.git .
 
 # ---- Runtime Stage ----
 FROM python:3.11-slim
