@@ -44,40 +44,6 @@ For full documentation on Rescan's features and capabilities, visit the \[\*\*ma
 
 
 
-\## 🚀 Quick Start
-
-
-
-\### 1. Clone this repository
-
-```bash
-
-&nbsp;ghcr.io/danutzzzzz/rescan-container-dev:latest
-
-```
-
-
-
-\### 3. Deploy with Docker Compose
-
-```bash
-
-docker-compose up -d
-
-```
-
-
-
-\### 4. Check the logs
-
-```bash
-
-docker-compose logs -f
-
-```
-
-
-
 ---
 
 
