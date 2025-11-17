@@ -98,7 +98,7 @@ Create a `config.ini` file with your Plex server details:
 
 \[plex]
 
-server = http://your-plex-server:32400
+server = http://localhost:32400
 
 token = your\_plex\_token\_here
 
@@ -106,7 +106,7 @@ token = your\_plex\_token\_here
 
 \[scan]
 
-directories = /media/movies,/media/tv
+directories = /path/to/your/media/folder
 
 
 
@@ -122,7 +122,7 @@ symlink\_check = true
 
 \[notifications]
 
-enabled = true
+enabled = false
 
 discord\_webhook\_url = your\_discord\_webhook\_url\_here
 
