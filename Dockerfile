@@ -18,7 +18,7 @@ WORKDIR /app
 
 # Copy files from the builder stage
 COPY --from=builder /app/rescan.py .
-COPY --from=builder /app/config.ini .
+COPY --from=builder /app/config-example.ini ./config.ini
 COPY --from=builder /app/requirements.txt .
 
 # Install dependencies
