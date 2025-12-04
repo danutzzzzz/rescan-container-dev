@@ -2,7 +2,7 @@
 FROM debian:bookworm-slim AS builder
 
 # Install git to clone the repo
-RUN apt-get update && apt-get install -y git && apt-get install -y ffmpeg && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
@@ -13,6 +13,11 @@ RUN git clone --branch master https://github.com/danutzzzzz/rescan.git .
 
 # ---- Runtime Stage ----
 FROM python:3.11-slim
+
+# Install FFmpeg and clean up in the Runtime Stage
+RUN apt-get update && \
+    apt-get install -y ffmpeg && \
+    rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
